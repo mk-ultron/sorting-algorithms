@@ -1,0 +1,23 @@
+# Build directory
+build/
+.vs/
+.vscode/
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Data files
+*.csv
