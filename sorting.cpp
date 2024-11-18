@@ -1,12 +1,11 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <chrono>
-#include <iomanip>
-#include <fstream>
+#include <iostream>   // For input/output operations (cout, cin)
+#include <vector>     // For std::vector container
+#include <algorithm>  // For std::sort
+#include <random>     // For random number generation
+#include <chrono>     // For timing measurements
+#include <iomanip>    // For output formatting (setw, setprecision)
 
-// Bubble Sort implementation
+// Bubble Sort 
 template<typename T>
 void bubbleSort(std::vector<T>& arr) {
     int n = arr.size();
@@ -19,7 +18,7 @@ void bubbleSort(std::vector<T>& arr) {
     }
 }
 
-// Quick Sort implementation
+// Quick Sort 
 template<typename T>
 int partition(std::vector<T>& arr, int low, int high) {
     T pivot = arr[high];
@@ -49,7 +48,7 @@ void quickSort(std::vector<T>& arr) {
     quickSortHelper(arr, 0, arr.size() - 1);
 }
 
-// Function to generate random data
+// Generate random data
 std::vector<int> generateRandomData(int size) {
     std::vector<int> data(size);
     std::random_device rd;
@@ -62,63 +61,42 @@ std::vector<int> generateRandomData(int size) {
     return data;
 }
 
-// Function to measure sorting time
-template<typename Func>
-double measureSortingTime(std::vector<int>& data, Func sortFunc) {
-    auto start = std::chrono::high_resolution_clock::now();
-    sortFunc(data);
-    auto end = std::chrono::high_resolution_clock::now();
-    
-    std::chrono::duration<double, std::milli> duration = end - start;
-    return duration.count();
-}
-
 int main() {
     std::vector<int> sizes = {100, 1000, 10000, 100000};
-    std::ofstream outFile("sorting_results.csv");
     
-    // Write CSV header
-    outFile << "Size,Bubble Sort (ms),Quick Sort (ms),STL Sort (ms)\n";
-    
-    std::cout << std::fixed << std::setprecision(2);
-    std::cout << "Performance Analysis of Sorting Algorithms\n";
+    std::cout << "Performance Analysis\n";
     std::cout << "----------------------------------------\n";
     std::cout << "Data Size | Bubble Sort | Quick Sort  | STL Sort\n";
     std::cout << "----------|-------------|-------------|----------\n";
     
     for (int size : sizes) {
-        // Generate data
-        auto data1 = generateRandomData(size);
-        auto data2 = data1;  // Make copies for each sort
-        auto data3 = data1;
+        auto data = generateRandomData(size);
+        auto data2 = data;
+        auto data3 = data;
         
         // Measure Bubble Sort
-        double bubbleTime = measureSortingTime(data1, bubbleSort<int>);
+        auto start = std::chrono::high_resolution_clock::now();
+        bubbleSort(data);
+        auto end = std::chrono::high_resolution_clock::now();
+        auto bubbleTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         
         // Measure Quick Sort
-        double quickTime = measureSortingTime(data2, quickSort<int>);
+        start = std::chrono::high_resolution_clock::now();
+        quickSort(data2);
+        end = std::chrono::high_resolution_clock::now();
+        auto quickTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         
         // Measure STL Sort
-        double stlTime = measureSortingTime(data3, 
-            [](std::vector<int>& arr) { std::sort(arr.begin(), arr.end()); });
+        start = std::chrono::high_resolution_clock::now();
+        std::sort(data3.begin(), data3.end());
+        end = std::chrono::high_resolution_clock::now();
+        auto stlTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         
-        // Print results
         std::cout << std::setw(9) << size << " | ";
         std::cout << std::setw(11) << bubbleTime << " | ";
         std::cout << std::setw(11) << quickTime << " | ";
         std::cout << std::setw(9) << stlTime << "\n";
-        
-        // Write to CSV
-        outFile << size << "," << bubbleTime << "," << quickTime << "," << stlTime << "\n";
     }
-    
-    outFile.close();
-    
-    std::cout << "\nResults have been saved to 'sorting_results.csv' for further analysis.\n";
-    std::cout << "\nAlgorithm Analysis:\n";
-    std::cout << "1. Bubble Sort: O(n²) - Simple but inefficient for large datasets\n";
-    std::cout << "2. Quick Sort: O(n log n) average case - Efficient for large datasets\n";
-    std::cout << "3. STL Sort: O(n log n) - Highly optimized hybrid algorithm\n";
     
     return 0;
 }
