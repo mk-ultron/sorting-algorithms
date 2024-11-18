@@ -2,8 +2,6 @@
 build/
 .vs/
 .vscode/
-!.vscode/tasks.json
-!.vscode/launch.json
 
 # Prerequisites
 *.d
@@ -14,10 +12,5 @@ build/
 *.o
 *.obj
 
-# Executables
-*.exe
-*.out
-*.app
-
-# Data files
-*.csv
+# Allow the specific executable
+!bin/sorting.exe
